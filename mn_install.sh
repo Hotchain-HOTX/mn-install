@@ -2,7 +2,7 @@
 
 TMP_FOLDER=$(mktemp -d)
 CONFIG_FILE='allcoinguru.conf'
-CONFIGFOLDER='/root/.allcoinguru'
+CONFIGFOLDER='/root/.allcoingurucore'
 COIN_DAEMON='/usr/local/bin/allcoingurud'
 COIN_CLI='/usr/local/bin/allcoinguru-cli'
 COIN_REPO='https://github.com/allcoinguru/AllCoinGuru-Core/releases/download/v.2.2.1/Ubuntu.16.04.tar.gz'
