@@ -7,7 +7,7 @@ COIN_DAEMON='/usr/local/bin/allcoingurud'
 COIN_CLI='/usr/local/bin/allcoinguru-cli'
 COIN_REPO='https://github.com/allcoinguru/AllCoinGuru-Core/releases/download/v2.2.1/Ubuntu.16.04.tar.gz'
 SENTINEL_REPO='https://github.com/allcoinguru/Sentinel.git'
-COIN_NAME='WantCoin'
+COIN_NAME='AllCoinGuru'
 COIN_PORT=7881
 RPC_PORT=10771
 
