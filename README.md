@@ -1,5 +1,7 @@
-# Hotchain
-Shell script to install a [Hotchain Masternode](http://hotchain.me/) on a Linux server running either Ubuntu 16.04 or 18.04. Run it on a clean VPS only. Use it on your own risk.
+# Hotchain Masternode installation script
+Shell script to install an [Hotchain Masternode](http://hotchain.me/) on a Linux server running either Ubuntu 16.04 or 18.04.
+
+**Run it on a clean Ubunbtu. Use it at your own risk.**
 ***
 
 ## Installation
@@ -48,7 +50,7 @@ hotchain-cli mnsync status
 hotchain-cli masternode status
 hotchain-cli getinfo
 ```
-Also, if you hotchain to check/start/stop **Hotchain**, run one of the following commands as **root**:
+Also, if you need to check/start/stop **Hotchain**, run one of the following commands as **root**:
 
 ```
 systemctl status Hotchain #To check if Hotchain service is running
