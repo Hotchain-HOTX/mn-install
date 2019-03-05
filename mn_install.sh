@@ -200,7 +200,7 @@ echo -e "Be patient, upgrading system on a small VPS will take ${RED}TIME${NC}!"
 if free | awk '/^Swap:/ {exit !$2}'; then
 	:
 else
-	Swap partition not found.. Creating swapfile.
+	echo Swap partition not found.. Creating swapfile.
 	fallocate -l 3G /swapfile
 	chmod 600 /swapfile
 	mkswap /swapfile
