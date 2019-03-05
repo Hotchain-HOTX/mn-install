@@ -174,7 +174,7 @@ fi
 
 function checks() {
 if [[ $(lsb_release -d) = *16.04* ]]; then
-  export UBU_PACKAGES="make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libzmq5 libdb5.3++"
+  export UBU_PACKAGES="make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libzmq5 libdb5.3++ unzip"
 else
     if [[ $(lsb_release -d) = *18.04* ]]; then
         export UBU_PACKAGES="make software-properties-common build-essential libtool autoconf libssl1.0-dev libboost-all-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libzmq5 libdb5.3++ unzip"
@@ -197,6 +197,18 @@ fi
 function prepare_system() {
 echo -e "Prepare the system to install ${GREEN}$COIN_NAME${NC} Masternode."
 echo -e "Be patient, upgrading system on a small VPS will take ${RED}TIME${NC}!"
+if free | awk '/^Swap:/ {exit !$2}'; then
+	:
+else
+	fallocate -l 3G /swapfile
+	chmod 600 /swapfile
+	mkswap /swapfile
+	swapon /swapfile
+	echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+	echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
+	echo 'vm.vfs_cache_pressure = 50' | sudo tee -a /etc/sysctl.conf
+	sysctl -p
+fi
 apt-get update >/dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get update > /dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y -qq upgrade >/dev/null 2>&1
