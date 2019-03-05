@@ -1,22 +1,22 @@
-# AllCoinGuru
-Shell script to install a [AllCoinGuru Coin Masternode](http://allcoin.guru/) on a Linux server running Ubuntu 16.04. Use it on your own risk.
+# Hotchain
+Shell script to install a [Hotchain Masternode](http://hotchain.me/) on a Linux server running either Ubuntu 16.04 or 18.04. Run it on a clean VPS only. Use it on your own risk.
 ***
 
 ## Installation
 ```
-wget -q https://raw.githubusercontent.com/allcoinguru/mn-install/master/mn_install.sh
+wget -q https://raw.githubusercontent.com/Hotchain-HOTX/mn-install/master/mn_install.sh
 bash mn_install.sh
 ```
 ***
 
-## Desktop wallet setup  
+## Desktop wallet setup
 
-After the MN is up and running, you need to configure the desktop wallet accordingly. Here are the steps:  
-1. Open the AllCoinGuru Desktop Wallet.  
-2. Go to RECEIVE and create a New Address: **MN1**  
-3. Send **1000** CGUN to **MN1**. You need to send all 1000 coins in one single transaction.
-4. Wait for 15 confirmations.  
-5. Go to **Help -> "Debug Window - Console"**  
+After the MN is up and running, you need to configure the desktop wallet accordingly. Here are the steps:
+1. Open the Hotchain Desktop Wallet.
+2. Go to RECEIVE and create a New Address: **MN1**
+3. Send **1000** HOTX to **MN1**. You need to send all 1000 coins in one single transaction.
+4. Wait for 15 confirmations.
+5. Go to **Help -> "Debug Window - Console"**
 6. Type the following command: **masternode outputs**
 7. Go to  **Tools -> "Open Masternode Configuration File"**
 8. Add the following entry:
@@ -38,22 +38,23 @@ masternode start-alias "MN1"
 ```
 14. Login to your VPS and check your masternode status by running the following command:.
 ```
-allcoinguru-cli masternode status
+hotchain-cli masternode status
 ```
 ***
 
 ## Usage:
 ```
-allcoinguru-cli mnsync status
-allcoinguru-cli masternode status  
-allcoinguru-cli getinfo
+hotchain-cli mnsync status
+hotchain-cli masternode status
+hotchain-cli getinfo
 ```
-Also, if you allcoinguru to check/start/stop **AllCoinGuru**, run one of the following commands as **root**:
+Also, if you hotchain to check/start/stop **Hotchain**, run one of the following commands as **root**:
 
 ```
-systemctl status AllCoinGuruCoin #To check if AllCoinGuru service is running  
-systemctl start AllCoinGuruCoin #To start AllCoinGuru service  
-systemctl stop AllCoinGuruCoin #To stop AllCoinGuru service  
-systemctl is-enabled AllCoinGuruCoin #To check if AllCoinGuru service is enabled on boot  
-```  
+systemctl status Hotchain #To check if Hotchain service is running
+systemctl start Hotchain #To start Hotchain service
+systemctl stop Hotchain #To stop Hotchain service
+systemctl is-enabled Hotchain #To check if Hotchain service is enabled on boot
+```
 ***
+

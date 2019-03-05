@@ -1,15 +1,14 @@
 #!/bin/bash
 
 TMP_FOLDER=$(mktemp -d)
-CONFIG_FILE='allcoinguru.conf'
-CONFIGFOLDER='/root/.allcoingurucore'
-COIN_DAEMON='/usr/local/bin/allcoingurud'
-COIN_CLI='/usr/local/bin/allcoinguru-cli'
-COIN_REPO='https://github.com/allcoinguru/AllCoinGuru-Core/releases/download/v.2.2.1.1/Ubuntu.16.x.tar.gz'
-SENTINEL_REPO='https://github.com/allcoinguru/Sentinel.git'
-COIN_NAME='AllCoinGuru'
-COIN_PORT=7881
-RPC_PORT=10771
+CONFIG_FILE='hotchain.conf'
+CONFIGFOLDER='/root/.hotchain'
+COIN_DAEMON='/usr/local/bin/hotchaind'
+COIN_CLI='/usr/local/bin/hotchain-cli'
+COIN_REPO='https://github.com/Hotchain-HOTX/Hotchain/releases/download/v1.0.0/x86_64-linux-gnu.zip'
+COIN_NAME='Hotchain'
+COIN_PORT=9069
+RPC_PORT=6990
 
 
 NODEIP=$(curl -s4 icanhazip.com)
@@ -20,29 +19,17 @@ GREEN='\033[0;32m'
 NC='\033[0m'
 
 
-function install_sentinel() {
-  echo -e "${GREEN}Install sentinel.${NC}"
-  apt-get -y install python-virtualenv virtualenv >/dev/null 2>&1
-  git clone $SENTINEL_REPO $CONFIGFOLDER/sentinel >/dev/null 2>&1
-  cd $CONFIGFOLDER/sentinel
-  virtualenv ./venv >/dev/null 2>&1
-  ./venv/bin/pip install -r requirements.txt >/dev/null 2>&1
-  echo  "* * * * * cd $CONFIGFOLDER/sentinel && ./venv/bin/python bin/sentinel.py >> $CONFIGFOLDER/sentinel.log 2>&1" > $CONFIGFOLDER/$COIN_NAME.cron
-  crontab $CONFIGFOLDER/$COIN_NAME.cron
-  rm $CONFIGFOLDER/$COIN_NAME.cron >/dev/null 2>&1
-}
-
-
-function compile_node() {
-  echo -e "Prepare to download $COIN_NAME"
+function download_node() {
+  echo -e "Downloading $COIN_NAME"
   cd $TMP_FOLDER
   wget -q $COIN_REPO
-  compile_error
+  download_error
   COIN_ZIP=$(echo $COIN_REPO | awk -F'/' '{print $NF}')
-  tar xvzf $COIN_ZIP >/dev/null 2>&1
-  compile_error
-  cp usr/local/bin/allcoinguru* /usr/local/bin
-  compile_error
+  unzip $COIN_ZIP >/dev/null 2>&1
+  download_error
+  cp x86_64-linux-gnu/hotchain* /usr/local/bin
+  chmod +x /usr/local/bin/hotchain*
+  download_error
   strip $COIN_DAEMON $COIN_CLI
   cd - >/dev/null 2>&1
   rm -rf $TMP_FOLDER >/dev/null 2>&1
@@ -111,6 +98,7 @@ function create_key() {
   read -e COINKEY
   if [[ -z "$COINKEY" ]]; then
   $COIN_DAEMON -daemon
+  echo "Please wait 30 seconds while your keys are generated..."
   sleep 30
   if [ -z "$(ps axo cmd:100 | grep $COIN_DAEMON)" ]; then
    echo -e "${RED}$COIN_NAME server couldn not start. Check /var/log/syslog for errors.{$NC}"
@@ -129,7 +117,6 @@ clear
 }
 
 function update_config() {
-  sed -i 's/daemon=1/daemon=0/' $CONFIGFOLDER/$CONFIG_FILE
   cat << EOF >> $CONFIGFOLDER/$CONFIG_FILE
 logintimestamps=1
 maxconnections=256
@@ -137,10 +124,6 @@ maxconnections=256
 masternode=1
 externalip=$NODEIP:$COIN_PORT
 masternodeprivkey=$COINKEY
-addnode=183.63.9.156:28619
-addnode=45.77.40.135:45416
-addnode=5.45.79.60
-addnode=5.45.79.60:58956
 EOF
 }
 
@@ -180,19 +163,24 @@ function get_ip() {
 }
 
 
-function compile_error() {
+function download_error() {
 if [ "$?" -gt "0" ];
  then
-  echo -e "${RED}Failed to compile $COIN_NAME. Please investigate.${NC}"
+  echo -e "${RED}Failed to download $COIN_NAME. Please investigate.${NC}"
   exit 1
 fi
 }
 
 
 function checks() {
-if [[ $(lsb_release -d) != *16.04* ]]; then
-  echo -e "${RED}You are not running Ubuntu 16.04. Installation is cancelled.${NC}"
-  exit 1
+if [[ $(lsb_release -d) = *16.04* ]]; then
+  export UBU_PACKAGES="make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libzmq5 libdb5.3++"
+else
+    if [[ $(lsb_release -d) = *18.04* ]]; then
+        export UBU_PACKAGES="make software-properties-common build-essential libtool autoconf libssl1.0-dev libboost-all-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libzmq5 libdb5.3++ unzip"
+    else
+        echo -e "${RED}You are not running Ubuntu 16.04 nor 18.04. Installation is cancelled.${NC}" && exit 1
+    fi
 fi
 
 if [[ $EUID -ne 0 ]]; then
@@ -207,7 +195,8 @@ fi
 }
 
 function prepare_system() {
-echo -e "Prepare the system to install ${GREEN}$COIN_NAME${NC} master node."
+echo -e "Prepare the system to install ${GREEN}$COIN_NAME${NC} Masternode."
+echo -e "Be patient, upgrading system on a small VPS will take ${RED}TIME${NC}!"
 apt-get update >/dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get update > /dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y -qq upgrade >/dev/null 2>&1
@@ -216,10 +205,7 @@ echo -e "${GREEN}Adding bitcoin PPA repository"
 apt-add-repository -y ppa:bitcoin/bitcoin >/dev/null 2>&1
 echo -e "Installing required packages, it may take some time to finish.${NC}"
 apt-get update >/dev/null 2>&1
-apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" make software-properties-common \
-build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev \
-libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev \
-libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libzmq5 libdb5.3++ >/dev/null 2>&1
+apt-get install -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" $UBU_PACKAGES >/dev/null 2>&1
 if [ "$?" -gt "0" ];
   then
     echo -e "${RED}Not all required packages were installed properly. Try to install them manually by running the following commands:${NC}\n"
@@ -246,10 +232,6 @@ function important_information() {
  echo -e "Stop: ${RED}systemctl stop $COIN_NAME.service${NC}"
  echo -e "VPS_IP:PORT ${RED}$NODEIP:$COIN_PORT${NC}"
  echo -e "MASTERNODE PRIVATEKEY is: ${RED}$COINKEY${NC}"
- if [[ -n $SENTINEL_REPO  ]]; then
-  echo -e "${RED}Sentinel${NC} is installed in ${RED}$CONFIGFOLDER/sentinel${NC}"
-  echo -e "Sentinel logs is: ${RED}$CONFIGFOLDER/sentinel.log${NC}"
- fi
  echo -e "Please check ${RED}$COIN_NAME${NC} is running with the following command: ${GREEN}systemctl status $COIN_NAME.service${NC}"
  echo -e "================================================================================================================================"
 }
@@ -260,7 +242,6 @@ function setup_node() {
   create_key
   update_config
   enable_firewall
-  install_sentinel
   important_information
   configure_systemd
 }
@@ -271,5 +252,5 @@ clear
 
 checks
 prepare_system
-compile_node
+download_node
 setup_node
