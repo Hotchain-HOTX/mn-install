@@ -33,7 +33,7 @@ Alias Address Privkey TxHash Output_index
 9. Save and close the file.
 10. Ensure the transaction at step 3. has **at least 20 confirmations**.
 11. Go to **Masternode Tab**. If you tab is not shown, please enable it from: **Settings - Options - Wallet - Show Masternodes Tab**
-12. Click **Update status** to see your node. If it is not shown, close the wallet and start it again. Make sure the wallet is un
+12. Click **Update status** to see your node. If it is not shown, close the wallet and start it again. Ensure the wallet is unlocked.
 13. Select your MN and click **Start Alias** to start it.
 14. Alternatively, open **Debug Console** and type:
 ```
