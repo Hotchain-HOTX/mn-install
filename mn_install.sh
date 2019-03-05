@@ -200,14 +200,15 @@ echo -e "Be patient, upgrading system on a small VPS will take ${RED}TIME${NC}!"
 if free | awk '/^Swap:/ {exit !$2}'; then
 	:
 else
+	Swap partition not found.. Creating swapfile.
 	fallocate -l 3G /swapfile
 	chmod 600 /swapfile
 	mkswap /swapfile
 	swapon /swapfile
-	echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-	echo 'vm.swappiness=10' | sudo tee -a /etc/sysctl.conf
-	echo 'vm.vfs_cache_pressure = 50' | sudo tee -a /etc/sysctl.conf
-	sysctl -p
+	echo '/swapfile none swap sw 0 0' >> /etc/fstab
+	echo 'vm.swappiness=10' >> /etc/sysctl.conf
+	echo 'vm.vfs_cache_pressure = 50' >> /etc/sysctl.conf
+	sysctl -p > /dev/null 2>&1
 fi
 apt-get update >/dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get update > /dev/null 2>&1
