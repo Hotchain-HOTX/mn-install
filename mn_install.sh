@@ -195,8 +195,6 @@ fi
 }
 
 function prepare_system() {
-echo -e "Prepare the system to install ${GREEN}$COIN_NAME${NC} Masternode."
-echo -e "Be patient, upgrading system on a small VPS will take ${RED}TIME${NC}!"
 if free | awk '/^Swap:/ {exit !$2}'; then
 	:
 else
@@ -210,6 +208,8 @@ else
 	echo 'vm.vfs_cache_pressure = 50' >> /etc/sysctl.conf
 	sysctl -p > /dev/null 2>&1
 fi
+echo -e "Prepare the system to install ${GREEN}$COIN_NAME${NC} Masternode."
+echo -e "Be patient, upgrading system on a small VPS will take ${RED}TIME${NC}!"
 apt-get update >/dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get update > /dev/null 2>&1
 DEBIAN_FRONTEND=noninteractive apt-get -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confold" -y -qq upgrade >/dev/null 2>&1
