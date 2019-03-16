@@ -174,10 +174,10 @@ fi
 
 function checks() {
 if [[ $(lsb_release -d) = *16.04* ]]; then
-  export UBU_PACKAGES="make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libzmq5 libdb5.3++ unzip"
+  export UBU_PACKAGES="make software-properties-common build-essential libtool autoconf libssl-dev libboost-dev libboost-chrono-dev libboost-filesystem-dev libboost-program-options-dev libboost-system-dev libboost-test-dev libboost-thread-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libzmq5 libdb5.3++ unzip net-tools"
 else
     if [[ $(lsb_release -d) = *18.04* ]]; then
-        export UBU_PACKAGES="make software-properties-common build-essential libtool autoconf libssl1.0-dev libboost-all-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libzmq5 libdb5.3++ unzip"
+        export UBU_PACKAGES="make software-properties-common build-essential libtool autoconf libssl1.0-dev libboost-all-dev sudo automake git wget curl libdb4.8-dev bsdmainutils libdb4.8++-dev libminiupnpc-dev libgmp3-dev ufw pkg-config libevent-dev libzmq5 libdb5.3++ unzip net-tools"
     else
         echo -e "${RED}You are not running Ubuntu 16.04 nor 18.04. Installation is cancelled.${NC}" && exit 1
     fi
