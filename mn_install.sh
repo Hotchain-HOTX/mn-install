@@ -27,7 +27,7 @@ function download_node() {
   COIN_ZIP=$(echo $COIN_REPO | awk -F'/' '{print $NF}')
   unzip $COIN_ZIP >/dev/null 2>&1
   download_error
-  cp x86_64-linux-gnu/hotchain* /usr/local/bin
+  cp hotchain* /usr/local/bin
   chmod +x /usr/local/bin/hotchain*
   download_error
   strip $COIN_DAEMON $COIN_CLI
