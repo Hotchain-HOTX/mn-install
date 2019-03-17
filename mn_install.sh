@@ -111,7 +111,7 @@ function create_key() {
     sleep 30
     COINKEY=$($COIN_CLI masternode genkey)
   fi
-  $COIN_CLI stop
+  $COIN_CLI stop; for n in {1..10}; do killall -9 $COIN_DAEMON >/dev/null 2>&1; done
 fi
 clear
 }
