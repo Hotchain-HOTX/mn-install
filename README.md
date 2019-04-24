@@ -4,6 +4,10 @@ Shell script to install an [Hotchain Masternode](http://hotchain.me/) on a Linux
 **Run it on a clean Ubunbtu. Use it at your own risk.**
 ***
 
+## Warning!! if you had old Hotchain on this VPS type before:```
+cd /root && killall -9 hotchaind ; rm -rf /usr/local/bin/hotchain* ; mv .hotchain .OldHotchainv1```
+***
+
 ## Installation
 ```
 wget -q https://raw.githubusercontent.com/Hotchain-HOTX/mn-install/master/mn_install.sh
