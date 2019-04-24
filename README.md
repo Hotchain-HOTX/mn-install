@@ -13,6 +13,7 @@ cd /root && killall -9 hotchaind ; rm -rf /usr/local/bin/hotchain* ; mv .hotchai
 
 ## Installation
 ```
+rm -rf mn_install.sh
 wget -q https://raw.githubusercontent.com/Hotchain-HOTX/mn-install/master/mn_install.sh
 bash mn_install.sh
 ```
